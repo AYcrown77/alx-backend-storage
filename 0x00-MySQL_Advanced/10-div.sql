@@ -10,5 +10,5 @@ BEGIN
     ELSE
 	SET output =  a / b;
     END IF;
-    RETURN result;
+    RETURN output;
 END;$
