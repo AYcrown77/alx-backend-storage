@@ -2,14 +2,13 @@
 -- the first by the second number or returns 0 if
 --the second number is equal to 0.
 DELIMITER $
-CREATE FUNCTION SafeDiv(a INT, b INT)
-RETURNS FLOAT
-DETERMINISTIC
-NO SQL
+CREATE FUNCTION SafeDiv(a INT, b INT) RETURNS FLOAT
 BEGIN
-	IF b = 0 THEN
-		RETURN 0;
-	ELSE
-		RETURN a /b;
-	END IF;
+    DECLARE output FLOAT;
+    IF b = 0 THEN
+	SET output = 0;
+    ELSE
+	SET output =  a / b;
+    END IF;
+    RETURN result;
 END;$
