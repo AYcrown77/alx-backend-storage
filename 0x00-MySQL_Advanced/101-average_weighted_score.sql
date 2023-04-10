@@ -1,7 +1,7 @@
 --  SQL script that creates a stored procedure
---ComputeAverageWeightedScoreForUsers that computes and store
+-- ComputeAverageWeightedScoreForUsers that computes and store
 -- the average weighted score for all students.
-DELIMITER $ ;
+DELIMITER $
 CREATE PROCEDURE ComputeAverageWeightedScoreForUsers()
 BEGIN
 	UPDATE users SET avg_score = (SELECT SUM(corrections.score * projects.weight) / SUM(projects.weight)
