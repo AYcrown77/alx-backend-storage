@@ -1,5 +1,6 @@
 -- SQL script that creates a trigger that decreases the quantity
 -- of an item after adding a new order
-CREATE TRIGGER items_sub_quantity AFTER INSERT ON orders FOR EACH ROW
-UPDATE items SET quantity = quantity - NEW.number
-WHERE name = NEW.item__name;
+CREATE TRIGGER items_substract_quantity
+AFTER INSERT ON orders FOR EACH ROW
+UPDATE items SET items.quantity = items.quantity - NEW.number
+WHERE items.name = NEW.item_name;
