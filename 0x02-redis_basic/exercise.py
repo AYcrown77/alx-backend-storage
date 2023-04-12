@@ -3,8 +3,8 @@
 
 
 import redis
-import uuid
-from typing import Union, Callable
+from uuid import uuid4
+from typing import Union, Callable, Optional
 from functools import wraps
 
 
@@ -44,7 +44,7 @@ def replay(method: Callable) -> None:
     """
     Prints the call history of the method passed as a parameter
     """
-    redis_instance = method.__self__.redis
+    redis_instance = method.__self__._redis
     key = method.__qualname__
     n_calls = redis_instance.get(key).decode("utf-8")
     print(f'{key} was called {n_calls} times:')
@@ -74,7 +74,7 @@ class Cache:
         """
         Stores new data with a unique id into the Redis instance
         """
-        id = str(uuid.uuid4())
+        id = str(uuid4())
         self.redis.set(id, data)
         return id
 
