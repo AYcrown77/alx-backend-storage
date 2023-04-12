@@ -7,20 +7,18 @@ from uuid import uuid4
 from typing import Union, Callable, Optional
 from functools import wraps
 
-"""
+
 def count_calls(method: Callable) -> Callable:
     """
     Decorator that increments a key with the method's name in Redis
     every time it's called
     """
     @wraps(method)
-    def wrapper(self, *args, **kwargs):
+    def wrapper(*args, **kwargs):
         """Helper function"""
         key = method.__qualname__
-        if self._redis.get(key) is None:
-            self._redis.set(key, 0)
-        self._redis.incr(key)
-        return method(self, *args, **kwargss)
+        args[0]_redis.incr(key)
+        return method(*args, **kwargs)
     return wrapper
 
 
@@ -30,12 +28,12 @@ def call_history(method: Callable) -> Callable:
     for a particular function in Redis
     """
     @wraps(method)
-    def wrapper(self, *args, **kwargs):
+    def wrapper(*args, **kwargs):
         """Helper function"""
         key = method.__qualname__
-        self._redis.rpush(f'{key}:inputs', str(args))
-        output = method(self, *args, **kwargs)
-        self._redis.rpush(f'{key}:outputs', str(output))
+        args[0]_redis.rpush(f'{key}:inputs', str(args[1:]))
+        output = method(*args, **kwargs)
+        args[0]_redis.rpush(f'{key}:outputs', str(output))
         return output
     return wrapper
 
@@ -44,18 +42,16 @@ def replay(method: Callable) -> None:
     """
     Prints the call history of the method passed as a parameter
     """
-    redis_instance = method.__self__._redis
+    red = redis.Redis()
     key = method.__qualname__
-    n_calls = redis_instance.get(key).decode("utf-8")
-    print(f'{key} was called {n_calls} times:')
-    f_inputs = redis_instance.lrange(f'{key}:inputs', 0, -1)
-    f_outputs = redis_instance.lrange(f'{key}:outputs', 0, -1)
-    f_inout = list(zip(f_inputs, f_outputs))
-    for input, output in f_inout:
-        input = input.decode('utf-8')
-        output = output.decode('utf-8')
-        print(f"{key}(*{input}) -> {output}")
-"""
+    method_count = red.get(key)
+    inputs = red.lrange("{}:inputs".format(key), 0, -1)
+    outputs = red.lrange("{}:outputs".format(key), 0, -1)
+    print("{} was called {} times:".format(key, int(method_count)))
+    for ins, out in zip(inputs, outputs):
+        print("{}(*{}) -> {}".format(key,
+              ins.decode("utf-8"), out.decode("utf-8")))
+
 
 class Cache:
     """
@@ -77,13 +73,20 @@ class Cache:
         id = str(uuid4())
         self._redis.set(id, data)
         return id
-"""
-    def get(self, key: str, fn: Callable = None):
+
+    def get(self, key: str, fn: Optional[Callable] = None) -> Union[str,
+                                                                    bytes,
+                                                                    int,
+                                                                    float,
+                                                                    none]:
         """
         Takes a key string argument and an optional
         Callable argument named fn that will be used
         to convert the data back to the desired format.
         """
+        if not self.redis.get(key):
+            return None
+
         value = self._redis.get(key)
         if fn is not None:
             return fn(value)
@@ -105,4 +108,3 @@ class Cache:
         except ValueError:
             value = 0
         return value
-    """
