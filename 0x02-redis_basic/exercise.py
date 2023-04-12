@@ -15,7 +15,7 @@ def count_calls(method: Callable) -> Callable:
     """
     @wraps(method)
     def wrapper(*args, **kwargs):
-        """Helper function"""
+
         key = method.__qualname__
         args[0]_redis.incr(key)
         return method(*args, **kwargs)
@@ -29,7 +29,7 @@ def call_history(method: Callable) -> Callable:
     """
     @wraps(method)
     def wrapper(*args, **kwargs):
-        """Helper function"""
+
         key = method.__qualname__
         args[0]_redis.rpush(f'{key}:inputs', str(args[1:]))
         output = method(*args, **kwargs)
@@ -57,7 +57,7 @@ class Cache:
     """
     Class to create a new Redis instance
     """
-    def __init__(self) -> None:
+    def __init__(self):
         """
         Instantiates a new Redis instance
         """
