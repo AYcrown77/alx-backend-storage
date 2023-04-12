@@ -70,9 +70,9 @@ class Cache:
         """
         Stores new data with a unique id into the Redis instance
         """
-        id = str(uuid4())
-        self._redis.set(id, data)
-        return id
+        val = str(uuid4())
+        self._redis.set(val, data)
+        return val
 
     def get(self, key: str, fn: Optional[Callable] = None) -> Union[str,
                                                                     bytes,
@@ -84,7 +84,7 @@ class Cache:
         Callable argument named fn that will be used
         to convert the data back to the desired format.
         """
-        if not self.redis.get(key):
+        if not self._redis.get(key):
             return None
 
         value = self._redis.get(key)
