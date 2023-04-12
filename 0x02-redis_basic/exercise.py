@@ -7,7 +7,7 @@ from uuid import uuid4
 from typing import Union, Callable, Optional
 from functools import wraps
 
-
+"""
 def count_calls(method: Callable) -> Callable:
     """
     Decorator that increments a key with the method's name in Redis
@@ -55,13 +55,13 @@ def replay(method: Callable) -> None:
         input = input.decode('utf-8')
         output = output.decode('utf-8')
         print(f"{key}(*{input}) -> {output}")
-
+"""
 
 class Cache:
     """
     Class to create a new Redis instance
     """
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Instantiates a new Redis instance
         """
@@ -77,7 +77,7 @@ class Cache:
         id = str(uuid4())
         self.redis.set(id, data)
         return id
-
+"""
     def get(self, key: str, fn: Callable = None):
         """
         Takes a key string argument and an optional
@@ -105,3 +105,4 @@ class Cache:
         except ValueError:
             value = 0
         return value
+    """
