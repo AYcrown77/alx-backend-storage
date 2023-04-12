@@ -75,7 +75,7 @@ class Cache:
         Stores new data with a unique id into the Redis instance
         """
         id = str(uuid4())
-        self.redis.set(id, data)
+        self._redis.set(id, data)
         return id
 """
     def get(self, key: str, fn: Callable = None):
